@@ -9,27 +9,10 @@ const ProductManagement = ({ products, fetchProducts }) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Handle file input (convert image to Base64)
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setForm({ ...form, image: reader.result }); // save base64 image
-    };
-    reader.readAsDataURL(file);
-  };
-
   // Add or Update Product
   const handleSubmit = async () => {
     if (!form.name || !form.price || !form.quantity) {
       return alert("Please fill out all fields.");
-    }
-
-    // Only require image if adding a new product
-    if (!editingId && !form.image) {
-      return alert("Please upload an image (optional for editing).");
     }
 
     try {
@@ -45,7 +28,7 @@ const ProductManagement = ({ products, fetchProducts }) => {
           name: form.name,
           price: Number(form.price),
           quantity: Number(form.quantity),
-          image: form.image, // can be empty if editing
+          image: form.image, // kept as is for backend compatibility
         }),
       });
 
@@ -83,40 +66,7 @@ const ProductManagement = ({ products, fetchProducts }) => {
     <div>
       <h1>Product Management</h1>
 
-      <form>
-        <input
-          name="name"
-          placeholder="Name"
-          value={form.name}
-          onChange={handleChange}
-        />
-        <input
-          name="price"
-          type="number"
-          placeholder="Price"
-          value={form.price}
-          onChange={handleChange}
-        />
-        <input
-          name="quantity"
-          type="number"
-          placeholder="Quantity"
-          value={form.quantity}
-          onChange={handleChange}
-        />
-
-        {/* File input for adding or updating an image */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-        />
-
-        <button type="button" onClick={handleSubmit}>
-          {editingId ? "Update" : "Add"} Product
-        </button>
-      </form>
-
+      {/* Product Table */}
       <table>
         <thead>
           <tr>
@@ -153,6 +103,34 @@ const ProductManagement = ({ products, fetchProducts }) => {
           ))}
         </tbody>
       </table>
+
+      {/* Product Form */}
+      <form>
+        <input
+          name="name"
+          placeholder="Name"
+          value={form.name}
+          onChange={handleChange}
+        />
+        <input
+          name="price"
+          type="number"
+          placeholder="Price"
+          value={form.price}
+          onChange={handleChange}
+        />
+        <input
+          name="quantity"
+          type="number"
+          placeholder="Quantity"
+          value={form.quantity}
+          onChange={handleChange}
+        />
+
+        <button type="button" onClick={handleSubmit}>
+          {editingId ? "Update" : "Add"} Product
+        </button>
+      </form>
     </div>
   );
 };
