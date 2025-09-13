@@ -5,11 +5,11 @@ const Dashboard = ({ products }) => {
 
   const fetchDashboard = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/dashboard");
+      const res = await fetch("https://clementina-wings-cafe.onrender.com/api/dashboard");
       const data = await res.json();
       setStats(data);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching dashboard data:", err);
       setStats({});
     }
   };
