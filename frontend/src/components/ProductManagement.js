@@ -23,8 +23,13 @@ const ProductManagement = ({ products, fetchProducts }) => {
 
   // Add or Update Product
   const handleSubmit = async () => {
-    if (!form.name || !form.price || !form.quantity || !form.image) {
-      return alert("Please fill out all fields and upload an image.");
+    if (!form.name || !form.price || !form.quantity) {
+      return alert("Please fill out all fields.");
+    }
+
+    // Only require image if adding a new product
+    if (!editingId && !form.image) {
+      return alert("Please upload an image (optional for editing).");
     }
 
     try {
@@ -40,7 +45,7 @@ const ProductManagement = ({ products, fetchProducts }) => {
           name: form.name,
           price: Number(form.price),
           quantity: Number(form.quantity),
-          image: form.image, // save base64 image to backend
+          image: form.image, // can be empty if editing
         }),
       });
 
@@ -62,7 +67,7 @@ const ProductManagement = ({ products, fetchProducts }) => {
       name: product.name,
       price: product.price,
       quantity: product.quantity,
-      image: product.image || "",
+      image: "", // optional to upload new image
     });
     setEditingId(product.id);
   };
