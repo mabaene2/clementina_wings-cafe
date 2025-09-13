@@ -5,9 +5,7 @@ const ProductManagement = ({ products, fetchProducts }) => {
   const [editingId, setEditingId] = useState(null);
 
   // Handle text & number inputs
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   // Handle file input (convert image to Base64)
   const handleFileChange = (e) => {
@@ -15,9 +13,7 @@ const ProductManagement = ({ products, fetchProducts }) => {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setForm({ ...form, image: reader.result }); // save base64 image
-    };
+    reader.onloadend = () => setForm({ ...form, image: reader.result });
     reader.readAsDataURL(file);
   };
 
@@ -29,8 +25,8 @@ const ProductManagement = ({ products, fetchProducts }) => {
 
     try {
       const url = editingId
-        ? `http://localhost:5000/api/products/${editingId}`
-        : "http://localhost:5000/api/products";
+        ? `https://clementina-wings-cafe.onrender.com/api/products/${editingId}`
+        : "https://clementina-wings-cafe.onrender.com/api/products";
       const method = editingId ? "PUT" : "POST";
 
       await fetch(url, {
@@ -40,16 +36,13 @@ const ProductManagement = ({ products, fetchProducts }) => {
           name: form.name,
           price: Number(form.price),
           quantity: Number(form.quantity),
-          image: form.image, // save base64 image to backend
+          image: form.image,
         }),
       });
 
-      // Clear form and reset edit state
       setForm({ name: "", price: "", quantity: "", image: "" });
       setEditingId(null);
-
-      // Refresh product table
-      await fetchProducts();
+      fetchProducts(); // Refresh table
     } catch (err) {
       console.error(err);
       alert("Failed to save product.");
@@ -70,7 +63,7 @@ const ProductManagement = ({ products, fetchProducts }) => {
   // Delete product
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
-    await fetch(`http://localhost:5000/api/products/${id}`, { method: "DELETE" });
+    await fetch(`https://clementina-wings-cafe.onrender.com/api/products/${id}`, { method: "DELETE" });
     fetchProducts();
   };
 
@@ -79,33 +72,12 @@ const ProductManagement = ({ products, fetchProducts }) => {
       <h1>Product Management</h1>
 
       <form>
-        <input
-          name="name"
-          placeholder="Name"
-          value={form.name}
-          onChange={handleChange}
-        />
-        <input
-          name="price"
-          type="number"
-          placeholder="Price"
-          value={form.price}
-          onChange={handleChange}
-        />
-        <input
-          name="quantity"
-          type="number"
-          placeholder="Quantity"
-          value={form.quantity}
-          onChange={handleChange}
-        />
+        <input name="name" placeholder="Name" value={form.name} onChange={handleChange} />
+        <input name="price" type="number" placeholder="Price" value={form.price} onChange={handleChange} />
+        <input name="quantity" type="number" placeholder="Quantity" value={form.quantity} onChange={handleChange} />
 
-        {/* File input for adding or updating an image */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-        />
+        {/* File input for image upload */}
+        <input type="file" accept="image/*" onChange={handleFileChange} />
 
         <button type="button" onClick={handleSubmit}>
           {editingId ? "Update" : "Add"} Product
@@ -125,18 +97,7 @@ const ProductManagement = ({ products, fetchProducts }) => {
         <tbody>
           {(products || []).map((p) => (
             <tr key={p.id}>
-              <td>
-                {p.image ? (
-                  <img
-                    src={p.image}
-                    alt={p.name}
-                    width="50"
-                    height="50"
-                  />
-                ) : (
-                  "No Image"
-                )}
-              </td>
+              <td>{p.image ? <img src={p.image} alt={p.name} width="50" height="50" /> : "No Image"}</td>
               <td>{p.name}</td>
               <td>M{p.price}</td>
               <td>{p.quantity}</td>
