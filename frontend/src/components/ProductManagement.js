@@ -1,34 +1,37 @@
 import React, { useState } from "react";
 
-const ProductForm = ({ fetchProducts, editingProduct, setEditingProduct }) => {
-  const [form, setForm] = useState({
-    name: editingProduct?.name || "",
-    price: editingProduct?.price || "",
-    quantity: editingProduct?.quantity || "",
-    image: editingProduct?.image || "",
-  });
+const ProductManagement = ({ products, fetchProducts }) => {
+  const [form, setForm] = useState({ name: "", price: "", quantity: "", image: "" });
+  const [editingId, setEditingId] = useState(null);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  // Handle text & number inputs
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
+  // Handle file input (convert image to Base64)
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onloadend = () => setForm({ ...form, image: reader.result });
+    reader.onloadend = () => {
+      setForm({ ...form, image: reader.result }); // save base64 image
+    };
     reader.readAsDataURL(file);
   };
 
+  // Add or Update Product
   const handleSubmit = async () => {
-    if (!form.name || !form.price || !form.quantity) {
-      return alert("Please fill out all required fields.");
+    if (!form.name || !form.price || !form.quantity || !form.image) {
+      return alert("Please fill out all fields and upload an image.");
     }
 
     try {
-      const url = editingProduct
-        ? `https://clementina-wings-cafe.onrender.com/api/products/${editingProduct.id}`
+      const url = editingId
+        ? `https://clementina-wings-cafe.onrender.com/api/products/${editingId}`
         : "https://clementina-wings-cafe.onrender.com/api/products";
-      const method = editingProduct ? "PUT" : "POST";
+      const method = editingId ? "PUT" : "POST";
 
       await fetch(url, {
         method,
@@ -37,27 +40,44 @@ const ProductForm = ({ fetchProducts, editingProduct, setEditingProduct }) => {
           name: form.name,
           price: Number(form.price),
           quantity: Number(form.quantity),
-          image: form.image || "", // optional
+          image: form.image, // save base64 image to backend
         }),
       });
 
+      // Clear form and reset edit state
       setForm({ name: "", price: "", quantity: "", image: "" });
-      setEditingProduct(null);
-      fetchProducts();
+      setEditingId(null);
+
+      // Refresh product table
+      await fetchProducts();
     } catch (err) {
       console.error(err);
       alert("Failed to save product.");
     }
   };
 
-  const handleCancel = () => {
-    setForm({ name: "", price: "", quantity: "", image: "" });
-    setEditingProduct(null);
+  // Load product into form for editing
+  const handleEdit = (product) => {
+    setForm({
+      name: product.name,
+      price: product.price,
+      quantity: product.quantity,
+      image: product.image || "",
+    });
+    setEditingId(product.id);
+  };
+
+  // Delete product
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    await fetch(`https://clementina-wings-cafe.onrender.com/api/products/${id}`, { method: "DELETE" });
+    fetchProducts();
   };
 
   return (
     <div>
-      <h2>{editingProduct ? "Edit Product" : "Add Product"}</h2>
+      <h1>Product Management</h1>
+
       <form>
         <input
           name="name"
@@ -79,18 +99,57 @@ const ProductForm = ({ fetchProducts, editingProduct, setEditingProduct }) => {
           value={form.quantity}
           onChange={handleChange}
         />
+
+        {/* File input for adding or updating an image */}
         <input
           type="file"
           accept="image/*"
           onChange={handleFileChange}
         />
+
         <button type="button" onClick={handleSubmit}>
-          {editingProduct ? "Update" : "Add"} Product
+          {editingId ? "Update" : "Add"} Product
         </button>
-        {editingProduct && <button type="button" onClick={handleCancel}>Cancel</button>}
       </form>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(products || []).map((p) => (
+            <tr key={p.id}>
+              <td>
+                {p.image ? (
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    width="50"
+                    height="50"
+                  />
+                ) : (
+                  "No Image"
+                )}
+              </td>
+              <td>{p.name}</td>
+              <td>M{p.price}</td>
+              <td>{p.quantity}</td>
+              <td>
+                <button onClick={() => handleEdit(p)}>Edit</button>
+                <button onClick={() => handleDelete(p.id)}>Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default ProductForm;
+export default ProductManagement;
