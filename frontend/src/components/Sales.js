@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const Sales = ({ products = [], sales = [], fetchProducts, fetchSales }) => {
   const [selectedProduct, setSelectedProduct] = useState("");
@@ -8,13 +8,13 @@ const Sales = ({ products = [], sales = [], fetchProducts, fetchSales }) => {
     if (!selectedProduct || quantitySold <= 0) return alert("Enter valid values");
 
     try {
-      const res = await fetch("http://localhost:5000/api/sales", {
+      const res = await fetch("https://clementina-wings-cafe.onrender.com/api/sales", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           productId: Number(selectedProduct),
-          quantity: Number(quantitySold)
-        })
+          quantity: Number(quantitySold),
+        }),
       });
 
       const result = await res.json();
