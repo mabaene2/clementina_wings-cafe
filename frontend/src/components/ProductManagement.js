@@ -36,7 +36,7 @@ const ProductManagement = ({ products, fetchProducts }) => {
       setForm({ name: "", price: "", quantity: "", image: "" });
       setEditingId(null);
 
-      // Refresh product table
+      // Refresh product table immediately
       await fetchProducts();
     } catch (err) {
       console.error(err);
@@ -45,7 +45,7 @@ const ProductManagement = ({ products, fetchProducts }) => {
   };
 
   // Load product into form for editing
-  const handleEdit = (product) => {
+  const handleEdit = async (product) => {
     setForm({
       name: product.name,
       price: product.price,
@@ -53,13 +53,18 @@ const ProductManagement = ({ products, fetchProducts }) => {
       image: "", // optional to upload new image
     });
     setEditingId(product.id);
+
+    // Ensure table updates immediately after editing starts
+    await fetchProducts();
   };
 
   // Delete product
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     await fetch(`https://clementina-wings-cafe.onrender.com/api/products/${id}`, { method: "DELETE" });
-    fetchProducts();
+
+    // Refresh product table immediately after deletion
+    await fetchProducts();
   };
 
   return (
