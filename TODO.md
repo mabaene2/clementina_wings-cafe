@@ -1,0 +1,2 @@
+- [x] Add image display to Inventory.js table
+- [x] Add image display to Dashboard.js product cards

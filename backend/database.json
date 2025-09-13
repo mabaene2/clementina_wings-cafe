@@ -1,0 +1,63 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Espresso",
+      "price": 3.5,
+      "quantity": 20,
+      "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=500&q=60"
+    },
+    {
+      "id": 2,
+      "name": "Latte",
+      "price": 4,
+      "quantity": 8,
+      "image": "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=500&q=60"
+    },
+    {
+      "id": 3,
+      "name": "Whipped Coffee",
+      "price": 4.5,
+      "quantity": 10,
+      "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=500&q=60"
+    },
+    {
+      "id": 4,
+      "name": "Double Espresso",
+      "price": 4,
+      "quantity": 18,
+      "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=500&q=60"
+    },
+    {
+      "id": 5,
+      "name": "Cappuccino",
+      "price": 4.2,
+      "quantity": 12,
+      "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=500&q=60"
+    },
+    {
+      "id": 6,
+      "name": "Latte Glass",
+      "price": 4.3,
+      "quantity": 14,
+      "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=500&q=60"
+    }
+  ],
+  "sales": [
+    {
+      "id": 1757731541276,
+      "productId": 2,
+      "quantity": 7,
+      "date": "2025-09-13T02:45:41.276Z"
+    }
+  ],
+  "stockTransactions": [
+    {
+      "id": 1757731541277,
+      "productId": 2,
+      "change": -7,
+      "reason": "sale",
+      "date": "2025-09-13T02:45:41.276Z"
+    }
+  ]
+}
